@@ -30,6 +30,18 @@ alphafono/
 | ClickUp | ✅ Ativo | Folder `Alphafono`, Etapa 3 em andamento |
 | Vercel | ✅ Deploy automático | alphafono-dashboard.vercel.app |
 
+## Correções pendentes (aguardando acesso WordPress)
+
+| # | Correção | Prioridade | Status |
+|---|---|---|---|
+| 1 | Links quebrados no footer — 11 hrefs com espaço | 🔴 Crítico | Aguardando acesso |
+| 2 | Flash branco no hero (CSS FlexSlider) | 🔴 Crítico | Aguardando acesso |
+| 3 | Adicionar CTA WhatsApp no hero | 🟠 Alto | Aguardando acesso |
+
+Report enviado ao admin em 17/06/2026 → `audits/2026-06-17-report-correcoes-site.md`
+
+---
+
 ## Regras de SEO (não alterar)
 
 - URLs/slugs de todas as páginas e posts do blog
