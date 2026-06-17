@@ -2,13 +2,20 @@
 
 MCPs (Model Context Protocols) configurados para este projeto.
 
-## Ativos
+## Canais Google
+
+| Canal | Finalidade | Status | Doc |
+|---|---|---|---|
+| Google Analytics 4 | Métricas de tráfego e conversão | ✅ Ativo | — |
+| Google Search Console | SEO orgânico — queries, posições, cliques | ✅ Ativo | [gsc.md](./gsc.md) |
+| Google Business Profile | SEO local — ligações, rotas, buscas locais | 🔄 Em configuração | [gbp.md](./gbp.md) |
+| Google Ads | Performance de mídia paga | 📋 Planejado | [ads.md](./ads.md) |
+
+## Outros
 
 | MCP | Finalidade | Status |
 |---|---|---|
 | ClickUp | Gestão de tasks do projeto | ✅ Ativo |
-| Google Search Console | Monitoramento de SEO | 🔄 Em configuração |
-| Google Analytics 4 | Métricas do site | ✅ Ativo (via API) |
 
 ## Google Search Console
 
