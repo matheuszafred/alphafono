@@ -21,12 +21,14 @@ alphafono/
 
 ## Integrações
 
-| Serviço | Status |
-|---|---|
-| Google Analytics 4 | ✅ Ativo — Property `538440494` |
-| Google Search Console | 🔄 Em configuração |
-| ClickUp | ✅ Ativo — Folder `Alphafono` |
-| Vercel | ✅ Deploy automático |
+| Serviço | Status | Notas |
+|---|---|---|
+| Google Analytics 4 | ✅ Ativo | Property `538440494`, dashboard `/` |
+| Google Search Console | ✅ Ativo | Dashboard `/seo`, baseline: 525 cliques/7d |
+| Google Business Profile | 🔴 Bloqueado | Aguarda acesso de proprietário dos donos do perfil |
+| Google Ads | 📋 Planejado | Implementar quando campanhas estiverem ativas |
+| ClickUp | ✅ Ativo | Folder `Alphafono`, Etapa 3 em andamento |
+| Vercel | ✅ Deploy automático | alphafono-dashboard.vercel.app |
 
 ## Regras de SEO (não alterar)
 
