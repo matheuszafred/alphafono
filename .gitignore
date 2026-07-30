@@ -10,6 +10,10 @@ service-account*.json
 node_modules/
 .next/
 .vercel/
+*.tsbuildinfo
+
+# Cache de scrape (Firecrawl)
+.firecrawl/
 
 # Python
 __pycache__/

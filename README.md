@@ -1,23 +1,31 @@
 # Alphafono — Projeto Daedalus
 
-Repositório central do projeto Alphafono. Contém o dashboard de métricas, integrações com GSC/GA4, auditorias e automações.
+Repositório central (monorepo) do projeto Alphafono. Reúne o dashboard de métricas, o
+CRM/operação de leads, as integrações (GSC/GA4/GBP), auditorias e automações.
 
 ## Estrutura
 
 ```
 alphafono/
-├── dashboard/      ← Next.js + Tailwind + shadcn/ui + Recharts (deploy: Vercel)
-├── audits/         ← Relatórios de auditoria (DOM, SEO, CTA, etc.)
-├── mcp/            ← Configurações de MCPs (GSC, ClickUp, etc.)
-├── scripts/        ← Utilitários Python (clickup_sync.py, grant_ga4_access.py)
-└── .github/        ← Configurações do repositório
+├── dashboard/          ← Next.js + Tailwind + shadcn/ui + Recharts (deploy: Vercel)
+│                          Hoje: GA4 (/) e Search Console (/seo). Recebe as telas do CRM.
+├── whatsapp-service/   ← Serviço Baileys: captura leads do WhatsApp → Supabase (deploy próprio)
+├── supabase/           ← Schema + migrations do CRM (contacts, pipeline_events, messages)
+├── audits/             ← Relatórios de auditoria (DOM, SEO, CTA, correções do site)
+├── mcp/                ← Configurações de MCPs (GSC, GBP, Ads)
+├── scripts/            ← Utilitários (gsc_auth.py, gbp_auth.py, gsc.ts, grant_ga4_access.py)
+└── .github/            ← Configurações do repositório
 ```
 
-## Dashboard
+> **Deploy do dashboard:** o código vive agora em `dashboard/`. Na Vercel, o projeto
+> `alphafono-dashboard` deve usar **Root Directory = `dashboard/`** (ajuste no painel da Vercel).
 
-- **URL produção:** https://alphafono-dashboard.vercel.app
-- **Stack:** Next.js + Tailwind CSS + shadcn/ui + Recharts
-- **Código:** `/dashboard`
+## Frentes do projeto
+
+1. **Dashboard de métricas** (ativo) — GA4 + Search Console em `dashboard/`.
+2. **CRM / Operação de leads** (em construção) — captura de leads do WhatsApp (número novo),
+   origem, funil e pipeline. Código em `whatsapp-service/` + `supabase/` + novas rotas no
+   `dashboard/`. Ver estrutura de fatias no ClickUp (epic *CRM / Operação — Leads WhatsApp*).
 
 ## Integrações
 
@@ -26,11 +34,13 @@ alphafono/
 | Google Analytics 4 | ✅ Ativo | Property `538440494`, dashboard `/` |
 | Google Search Console | ✅ Ativo | Dashboard `/seo`, baseline: 525 cliques/7d |
 | Google Business Profile | 🔴 Bloqueado | Aguarda acesso de proprietário dos donos do perfil |
+| WhatsApp (Baileys) | 🛠️ Em construção | Ingestão de leads do número novo → Supabase |
+| Supabase | 🛠️ Em construção | Camada de dados do CRM |
 | Google Ads | 📋 Planejado | Implementar quando campanhas estiverem ativas |
 | ClickUp | ✅ Ativo | Folder `Alphafono`, Etapa 3 em andamento |
-| Vercel | ✅ Deploy automático | alphafono-dashboard.vercel.app |
+| Vercel | ✅ Deploy | alphafono-dashboard.vercel.app (Root Directory: `dashboard/`) |
 
-## Correções pendentes (aguardando acesso WordPress)
+## Correções do site (aguardando acesso WordPress)
 
 | # | Correção | Prioridade | Status |
 |---|---|---|---|
