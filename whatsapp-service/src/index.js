@@ -43,10 +43,29 @@ async function start() {
 
   sock.ev.on("creds.update", saveCreds);
 
+  // Pareamento por CÓDIGO (mais confiável que QR em terminal headless).
+  // Defina PAIRING_NUMBER com o número novo (só dígitos, ex: 5511999999999).
+  const pairingNumber = process.env.PAIRING_NUMBER?.replace(/\D/g, "");
+  if (pairingNumber && !sock.authState.creds.registered) {
+    setTimeout(async () => {
+      try {
+        const code = await sock.requestPairingCode(pairingNumber);
+        console.log(
+          `\n[whatsapp] CÓDIGO DE PAREAMENTO: ${code}\n` +
+            "  No celular do número novo: WhatsApp → Aparelhos conectados →\n" +
+            "  Conectar um aparelho → Conectar com número de telefone → digite o código.\n",
+        );
+      } catch (e) {
+        console.error("[whatsapp] falha ao gerar código de pareamento:", e.message);
+      }
+    }, 3000);
+  }
+
   sock.ev.on("connection.update", (update) => {
     const { connection, lastDisconnect, qr } = update;
 
-    if (qr) {
+    // QR só é usado se PAIRING_NUMBER não estiver definido (fallback).
+    if (qr && !pairingNumber) {
       console.log("\n[whatsapp] Escaneie o QR com o WhatsApp do NÚMERO NOVO:\n");
       qrcode.generate(qr, { small: true });
     }
