@@ -64,3 +64,43 @@ https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1!%20Quero%20agendar.%20(ref:%20site%20p
   conteúdo de conversa**. Acesso ao dashboard entra sob login na Fatia 2.
 - Decidimos guardar o telefone em claro (e não hash) para a secretária conseguir
   identificar o lead no pipeline; o dado fica protegido por auth + RLS (F2).
+
+## Deploy no VPS — aprendizados & runbook
+
+Validado ponta-a-ponta em 2026-08-04 (Docker no VPS `daedalustech.io`, Node 22).
+
+### ⚠️ Gotcha: o Web console mascara tokens JWT ao colar
+Ao colar a `SUPABASE_SERVICE_ROLE_KEY` (que começa com `eyJ`) direto no Web console da
+Hostinger, ele **detecta o padrão JWT e substitui por `•`** — a chave chega corrompida no
+`.env` e TODA gravação falha com `Cannot convert argument to a ByteString ... value of 8226`.
+**Solução:** gravar a chave via **base64 em pedaços curtos** e decodificar no servidor:
+
+```bash
+# gere localmente:  printf '%s' "$KEY" | base64
+: > /tmp/k.b64
+printf %s 'CHUNK1_de_~48_chars' >> /tmp/k.b64
+printf %s 'CHUNK2...'          >> /tmp/k.b64   # etc.
+printf 'SUPABASE_SERVICE_ROLE_KEY=' >> .env
+base64 -d /tmp/k.b64 >> .env && echo >> .env && rm -f /tmp/k.b64
+```
+
+### Pareamento (por código, headless)
+```bash
+docker compose up -d --force-recreate && sleep 12 && docker compose logs --tail=30
+# → CÓDIGO DE PAREAMENTO: XXXX-XXXX
+# no celular do número (PAIRING_NUMBER): WhatsApp → Aparelhos conectados →
+#   Conectar um aparelho → Conectar com número de telefone → digitar o código
+```
+
+### Migrar para outro número (ex.: teste → Alphafono)
+Simples — a infra é agnóstica ao número:
+```bash
+sed -i 's/^PAIRING_NUMBER=.*/PAIRING_NUMBER=<novo numero>/' .env
+rm -rf auth_info                       # limpa a sessão antiga
+docker compose up -d --force-recreate  # gera novo código → parear o novo celular
+```
+
+### 🐛 Known issue: telefone vem como LID
+Em contatos novos, `msg.key.remoteJid` pode ser um **LID** (`@lid`, ID interno de
+privacidade do WhatsApp) em vez do número real. Precisa resolver **LID → telefone** antes
+de considerar o dado 100% utilizável pela secretária. (Follow-up.)
