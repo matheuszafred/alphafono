@@ -21,8 +21,33 @@ function extractText(message) {
   );
 }
 
-function phoneFromJid(jid) {
-  return (jid || "").split("@")[0].split(":")[0];
+function jidToPhone(jid) {
+  // "5511999999999:12@s.whatsapp.net" -> "5511999999999"
+  return (jid || "").split("@")[0].split(":")[0].replace(/\D/g, "");
+}
+
+function isLidJid(jid) {
+  return typeof jid === "string" && jid.endsWith("@lid");
+}
+
+/**
+ * Resolve o TELEFONE REAL do remetente.
+ *
+ * No WhatsApp com endereçamento por LID, `key.remoteJid` vem como "<id>@lid" —
+ * um identificador interno, NÃO o telefone. O número real é entregue pelo
+ * servidor em `key.senderPn` ("sender phone number"). Sem isso, gravávamos o
+ * LID no lugar do telefone (bug da F1).
+ *
+ * Retorna { phone, resolved }:
+ *  - resolved=true  → telefone real (de senderPn ou de um remoteJid não-LID)
+ *  - resolved=false → só temos o LID; telefone não é derivável.
+ */
+function resolveSenderPhone(key) {
+  if (key?.senderPn) return { phone: jidToPhone(key.senderPn), resolved: true };
+  if (key?.remoteJid && !isLidJid(key.remoteJid)) {
+    return { phone: jidToPhone(key.remoteJid), resolved: true };
+  }
+  return { phone: jidToPhone(key?.remoteJid), resolved: false };
 }
 
 function tsToMs(messageTimestamp) {
@@ -94,8 +119,16 @@ async function start() {
       const jid = msg.key.remoteJid || "";
       if (jid.endsWith("@g.us") || jid === "status@broadcast") continue; // ignora grupos/status
 
-      const phone = phoneFromJid(jid);
+      const { phone, resolved } = resolveSenderPhone(msg.key);
       if (!phone) continue;
+      if (!resolved) {
+        // Só temos o LID (sem senderPn) — não dá pra atribuir o telefone real.
+        // Não gravamos um LID mascarado de telefone; registramos e seguimos.
+        console.warn(
+          `[whatsapp] telefone não-resolúvel (só LID=${jid}, pushName=${msg.pushName || "?"}). Lead ignorado.`,
+        );
+        continue;
+      }
 
       try {
         await upsertLead({
