@@ -100,7 +100,11 @@ rm -rf auth_info                       # limpa a sessão antiga
 docker compose up -d --force-recreate  # gera novo código → parear o novo celular
 ```
 
-### 🐛 Known issue: telefone vem como LID
+### ✅ Resolvido: telefone vinha como LID
 Em contatos novos, `msg.key.remoteJid` pode ser um **LID** (`@lid`, ID interno de
-privacidade do WhatsApp) em vez do número real. Precisa resolver **LID → telefone** antes
-de considerar o dado 100% utilizável pela secretária. (Follow-up.)
+privacidade do WhatsApp) em vez do número real. **Fix (2026-08-05, commit `851c507`):**
+o serviço resolve o telefone via `msg.key.senderPn` (o WhatsApp entrega o número real
+junto da mensagem no Baileys ≥6.7.24), com fallback pro `remoteJid` quando não é `@lid`.
+O caso só-LID irresolúvel é ignorado com warning em vez de gravar o LID como telefone.
+Validado E2E em produção (2026-08-05). Esta versão do Baileys **não** expõe store de
+mapeamento LID→PN — `senderPn` é a fonte.
