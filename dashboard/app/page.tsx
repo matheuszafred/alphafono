@@ -82,6 +82,13 @@ export default function Dashboard() {
           >
             SEO
           </Link>
+          <Link
+            href="/operacao"
+            className="px-4 py-1.5 rounded-full text-xs font-medium transition-all"
+            style={{ backgroundColor: "#fff", color: "#555", border: "1px solid #e2e8f0" }}
+          >
+            Operação
+          </Link>
         </div>
 
         {/* Period selector */}
