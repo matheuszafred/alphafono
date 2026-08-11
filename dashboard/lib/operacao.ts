@@ -15,10 +15,15 @@ function getServerClient(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+  // Nomeia exatamente o que falta — "defina as duas" não diz qual está ausente
+  // no ambiente, e a resposta muda o lugar onde você vai mexer.
   if (!url || !key) {
-    throw new Error(
-      "Supabase env ausente: defina NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY",
-    );
+    const missing = [
+      !url ? "NEXT_PUBLIC_SUPABASE_URL" : null,
+      !key ? "SUPABASE_SERVICE_ROLE_KEY" : null,
+    ].filter(Boolean);
+
+    throw new Error(`Supabase env ausente: ${missing.join(" e ")}`);
   }
 
   client = createClient(url, key, { auth: { persistSession: false } });
