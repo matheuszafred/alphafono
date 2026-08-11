@@ -8,9 +8,10 @@ CRM/operação de leads, as integrações (GSC/GA4/GBP), auditorias e automaçõ
 ```
 alphafono/
 ├── dashboard/          ← Next.js + Tailwind + shadcn/ui + Recharts (deploy: Vercel)
-│                          Hoje: GA4 (/) e Search Console (/seo). Recebe as telas do CRM.
+│                          GA4 (/), Search Console (/seo) e leads do WhatsApp (/operacao).
 ├── whatsapp-service/   ← Serviço Baileys: captura leads do WhatsApp → Supabase (deploy próprio)
 ├── supabase/           ← Schema + migrations do CRM (contacts, pipeline_events, messages)
+├── docs/               ← Arquitetura do projeto (ARQUITETURA.md)
 ├── audits/             ← Relatórios de auditoria (DOM, SEO, CTA, correções do site)
 ├── mcp/                ← Configurações de MCPs (GSC, GBP, Ads)
 ├── scripts/            ← Utilitários (gsc_auth.py, gbp_auth.py, gsc.ts, grant_ga4_access.py)
@@ -23,9 +24,12 @@ alphafono/
 ## Frentes do projeto
 
 1. **Dashboard de métricas** (ativo) — GA4 + Search Console em `dashboard/`.
-2. **CRM / Operação de leads** (em construção) — captura de leads do WhatsApp (número novo),
-   origem, funil e pipeline. Código em `whatsapp-service/` + `supabase/` + novas rotas no
-   `dashboard/`. Ver estrutura de fatias no ClickUp (epic *CRM / Operação — Leads WhatsApp*).
+2. **CRM / Operação de leads** (ativo) — captura de leads do WhatsApp, origem, funil e pipeline.
+   Código em `whatsapp-service/` + `supabase/` + `dashboard/app/operacao`. Ingestão e
+   visualização no ar desde 11/08/2026; falta auth e o pipeline ativo da secretária.
+
+> **📐 Arquitetura completa:** [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) — diagrama, fluxo de
+> um lead, modelo de dados, decisões (e por quê), notas de LGPD e gotchas de operação.
 
 ## Integrações
 
@@ -34,11 +38,12 @@ alphafono/
 | Google Analytics 4 | ✅ Ativo | Property `538440494`, dashboard `/` |
 | Google Search Console | ✅ Ativo | Dashboard `/seo`, baseline: 525 cliques/7d |
 | Google Business Profile | 🔴 Bloqueado | Aguarda acesso de proprietário dos donos do perfil |
-| WhatsApp (Baileys) | 🛠️ Em construção | Ingestão de leads do número novo → Supabase |
-| Supabase | 🛠️ Em construção | Camada de dados do CRM |
+| WhatsApp (Baileys) | ✅ Ativo | Ingestão no nº 5511915127216 → Supabase (chip dedicado) |
+| Supabase | ✅ Ativo | Camada de dados do CRM · RLS deny-all ligada |
 | Google Ads | 📋 Planejado | Implementar quando campanhas estiverem ativas |
 | ClickUp | ✅ Ativo | Folder `Alphafono`, Etapa 3 em andamento |
 | Vercel | ✅ Deploy | alphafono-dashboard.vercel.app (Root Directory: `dashboard/`) |
+| Dashboard `/operacao` | ✅ Ativo | Leads/dia, origem e funil — só agregados, sem PII |
 
 ## Correções do site (aguardando acesso WordPress)
 
