@@ -2,8 +2,10 @@
 gbp_auth.py — Autoriza acesso ao Google Business Profile e salva o refresh_token.
 
 Uso:
-  cd "3. Projetos & Clientes/Alphafono"
   python3 scripts/gbp_auth.py
+
+A credencial vem do cofre ~/.config/daedalus/alphafono
+(ou de $DAEDALUS_CREDS_DIR).
 
 O script abre o browser para autenticação OAuth2 e imprime:
   - GOOGLE_REFRESH_TOKEN_GBP
@@ -12,16 +14,16 @@ Adicione ao .env.local e às variáveis de ambiente do Vercel.
 """
 
 import json
-from pathlib import Path
+import creds
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 SCOPES = ["https://www.googleapis.com/auth/business.manage"]
-CLIENT_SECRET_FILE = Path("oauth2-client-secret.json")
+CLIENT_SECRET_FILE = creds.find("oauth2-client-secret.json")
 
 def main():
     if not CLIENT_SECRET_FILE.exists():
         print(f"Arquivo não encontrado: {CLIENT_SECRET_FILE}")
-        print("Execute na pasta: 3. Projetos & Clientes/Alphafono")
+        print("Coloque a credencial no cofre ~/.config/daedalus/alphafono")
         return
 
     flow = InstalledAppFlow.from_client_secrets_file(str(CLIENT_SECRET_FILE), SCOPES)

@@ -2,8 +2,10 @@
 gsc_auth.py — Autoriza acesso ao Google Search Console e salva o refresh_token.
 
 Uso:
-  cd "3. Projetos & Clientes/Alphafono"
   python3 scripts/gsc_auth.py
+
+A credencial vem do cofre ~/.config/daedalus/alphafono
+(ou de $DAEDALUS_CREDS_DIR).
 
 O script abre o browser para autenticação OAuth2 e imprime:
   - GOOGLE_CLIENT_ID
@@ -15,17 +17,13 @@ Copie esses valores para as variáveis de ambiente do Vercel.
 
 import json
 import os
-from pathlib import Path
+import creds
 
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 SCOPES = ["https://www.googleapis.com/auth/webmasters.readonly"]
-CLIENT_SECRET_FILE = Path(__file__).parent.parent / "3. Projetos & Clientes" / "Alphafono" / "oauth2-client-secret.json"
-
-# Fallback: procura na pasta atual
-if not CLIENT_SECRET_FILE.exists():
-    CLIENT_SECRET_FILE = Path("oauth2-client-secret.json")
+CLIENT_SECRET_FILE = creds.find("oauth2-client-secret.json")
 
 def main():
     if not CLIENT_SECRET_FILE.exists():
