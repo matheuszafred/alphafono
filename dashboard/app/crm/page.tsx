@@ -9,9 +9,9 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { useCrm } from "@/app/crm/_lib/crm-store";
+import { useCrm } from "@/lib/crm-store";
 import { LeadDetail } from "@/app/crm/_components/lead-detail";
-import { PageHeader } from "@/app/crm/_components/page-header";
+import { PageHeader } from "@/components/page-header";
 import {
   ESTAGIOS_ABERTOS,
   PARADO_DIAS,

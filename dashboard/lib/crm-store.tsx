@@ -115,3 +115,15 @@ export function useCrm(): CrmContexto {
   if (!ctx) throw new Error("useCrm precisa estar dentro de <CrmProvider>");
   return ctx;
 }
+
+/**
+ * Versão que não explode fora do provider.
+ *
+ * A sidebar é do sistema inteiro, mas o CrmProvider só envolve /crm — as telas de
+ * métrica não podem buscar /api/crm, que exige senha e devolveria 401. Então o
+ * contador de "a retornar" no menu simplesmente não aparece fora do CRM, em vez
+ * de derrubar a página.
+ */
+export function useCrmOpcional(): CrmContexto | null {
+  return useContext(Ctx);
+}

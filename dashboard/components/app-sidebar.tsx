@@ -22,7 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useCrm } from "@/app/crm/_lib/crm-store";
+import { useCrmOpcional } from "@/lib/crm-store";
 import { precisaRetorno } from "@/lib/crm-labels";
 
 // Atendimento primeiro: é onde a secretária trabalha todo dia. As telas de
@@ -40,8 +40,10 @@ const METRICAS = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { leads } = useCrm();
-  const aRetornar = leads.filter(precisaRetorno).length;
+  // Fora de /crm não há provider — e nem deveria haver, porque buscar leads
+  // exigiria a senha. Sem contador, a sidebar segue funcionando.
+  const crm = useCrmOpcional();
+  const aRetornar = crm ? crm.leads.filter(precisaRetorno).length : 0;
 
   return (
     <Sidebar collapsible="icon">

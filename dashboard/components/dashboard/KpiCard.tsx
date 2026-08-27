@@ -1,5 +1,7 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 
 interface KpiCardProps {
@@ -7,36 +9,37 @@ interface KpiCardProps {
   value: string | number;
   suffix?: string;
   description?: string;
-  icon: string;
-  accent: string;
-  accentBg: string;
+  icon?: LucideIcon;
 }
 
-export function KpiCard({ title, value, suffix, description, icon, accent, accentBg }: KpiCardProps) {
+/**
+ * Número de destaque no topo das telas de métrica.
+ *
+ * Trocou emoji por ícone e perdeu a barrinha de progresso decorativa: aquela
+ * barra mostrava sempre 1/3 preenchido, independente do valor — era enfeite com
+ * cara de dado, o pior tipo de elemento num painel.
+ *
+ * Sem cor por card, também de propósito. Cada KPI tinha seu tom, o que fazia a
+ * tela parecer um mosaico e gastava a atenção sem codificar nada: a cor não
+ * significava bom nem ruim. Cor fica reservada para o que tem significado.
+ */
+export function KpiCard({ title, value, suffix, description, icon: Icon }: KpiCardProps) {
   return (
-    <Card className="border-0 shadow-sm">
+    <Card className="shadow-xs">
       <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "#888" }}>{title}</p>
-            <div className="mt-1 flex items-baseline gap-1">
-              <span className="text-2xl font-bold" style={{ color: "#282828" }}>{value}</span>
-              {suffix && <span className="text-sm" style={{ color: "#888" }}>{suffix}</span>}
-            </div>
-            {description && (
-              <p className="mt-1 text-xs truncate max-w-[110px]" style={{ color: "#aaa" }}>{description}</p>
-            )}
-          </div>
-          <div
-            className="text-2xl p-2 rounded-lg flex-shrink-0"
-            style={{ backgroundColor: accentBg, border: `1px solid ${accent}22` }}
-          >
-            {icon}
-          </div>
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {title}
+          </p>
+          {Icon && <Icon className="size-4 shrink-0 text-muted-foreground/60" />}
         </div>
-        <div className="mt-3 h-0.5 rounded-full" style={{ backgroundColor: accentBg }}>
-          <div className="h-full w-1/3 rounded-full" style={{ backgroundColor: accent }} />
+        <div className="mt-2 flex items-baseline gap-1">
+          <span className="text-2xl font-semibold tabular-nums">{value}</span>
+          {suffix && <span className="text-sm text-muted-foreground">{suffix}</span>}
         </div>
+        {description && (
+          <p className="mt-1 truncate text-xs text-muted-foreground">{description}</p>
+        )}
       </CardContent>
     </Card>
   );

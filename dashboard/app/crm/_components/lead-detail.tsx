@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { useCrm } from "@/app/crm/_lib/crm-store";
+import { useCrm } from "@/lib/crm-store";
 import {
   LEAD_INTERESTS,
   LEAD_INTEREST_LABELS,

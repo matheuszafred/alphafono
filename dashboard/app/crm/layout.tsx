@@ -1,17 +1,8 @@
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { CrmProvider } from "@/app/crm/_lib/crm-store";
-import { AppSidebar } from "@/app/crm/_components/app-sidebar";
+import { CrmProvider } from "@/lib/crm-store";
 
-// O provider de dados envolve a sidebar também: o contador de "a retornar" que
-// aparece no menu sai da mesma lista que as telas usam, então não há como o menu
-// dizer um número e a tela mostrar outro.
+// A casca (sidebar + área principal) vive no layout raiz, valendo para o sistema
+// inteiro. Aqui fica só o provider de dados, porque buscar leads exige a senha e
+// as telas de métrica não podem nem tentar.
 export default function CrmLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <CrmProvider>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset className="min-w-0 overflow-hidden">{children}</SidebarInset>
-      </SidebarProvider>
-    </CrmProvider>
-  );
+  return <CrmProvider>{children}</CrmProvider>;
 }
