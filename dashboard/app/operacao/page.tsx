@@ -87,6 +87,13 @@ export default function OperacaoPage() {
           >
             Operação
           </span>
+          <Link
+            href="/crm"
+            className="px-4 py-1.5 rounded-full text-xs font-medium transition-all"
+            style={{ backgroundColor: "#fff", color: "#555", border: "1px solid #e2e8f0" }}
+          >
+            CRM
+          </Link>
         </div>
 
         {/* Period selector */}
