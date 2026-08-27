@@ -38,7 +38,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const senha = process.env.CRM_SENHA;
+  // .trim() porque valor colado no painel da Vercel costuma vir com espaco ou
+  // quebra de linha invisivel no fim. Sem isto a senha CERTA seria recusada, e o
+  // sintoma (401 com a senha correta) nao aponta para a causa.
+  const senha = process.env.CRM_SENHA?.trim();
 
   if (!senha) {
     // Nunca serve a rota sem trava configurada — nem em preview, nem em produção.
@@ -52,8 +55,9 @@ export function proxy(request: NextRequest) {
 
   if (header?.startsWith("Basic ")) {
     // atob existe no runtime de edge; Buffer não.
+    // O usuario e ignorado de proposito: a secretaria pode digitar o que quiser ali.
     const [, enviada] = atob(header.slice(6)).split(":");
-    if (enviada === senha) {
+    if (enviada?.trim() === senha) {
       const res = NextResponse.next();
       // Dado de paciente não fica em cache de intermediário nenhum.
       res.headers.set("Cache-Control", "no-store, private");
