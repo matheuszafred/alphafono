@@ -1,5 +1,16 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { LEAD_STAGES, type LeadOrigin, type LeadStage } from "@/lib/operacao";
+import {
+  LEAD_INTERESTS,
+  LEAD_STAGES,
+  LOSS_REASONS,
+  ORIGIN_LABELS,
+  type CrmData,
+  type Lead,
+  type LeadInterest,
+  type LeadOrigin,
+  type LeadStage,
+  type LossReason,
+} from "@/lib/crm-labels";
 
 // ⚠️ SERVER-ONLY. Usa a service_role key e NUNCA pode ser importado por um
 // Client Component — só via app/api/crm/route.ts.
@@ -30,101 +41,8 @@ function getServerClient(): SupabaseClient {
   return client;
 }
 
-// Motivos e procuras vêm da migration 0003 — que por sua vez veio da auditoria
-// de 60 conversas feita pelo atendimento em 14/08. Manter em sincronia com o
-// enum do banco: valor novo aqui exige `alter type ... add value` lá.
-export const LOSS_REASONS = [
-  "convenio",
-  "sumiu_apos_preco",
-  "comparou_preco",
-  "prazo",
-  "fora_escopo",
-  "nao_e_lead",
-  "outro",
-] as const;
-
-export const LEAD_INTERESTS = [
-  "pac",
-  "audiometria",
-  "fono_infantil",
-  "fono_adulto",
-  "terapia_auditiva",
-  "teste_orelhinha",
-  "bera",
-  "disfagia",
-  "home_care",
-  "outro",
-] as const;
-
-export type LossReason = (typeof LOSS_REASONS)[number];
-export type LeadInterest = (typeof LEAD_INTERESTS)[number];
-
-// Rótulos curtos de propósito: são botões numa tela de celular, e a secretária
-// precisa bater o olho e tocar, não ler.
-export const LOSS_REASON_LABELS: Record<LossReason, string> = {
-  convenio: "Queria convênio",
-  sumiu_apos_preco: "Sumiu após o preço",
-  comparou_preco: "Foi ver preço",
-  prazo: "Prazo não deu",
-  fora_escopo: "Não atendemos",
-  nao_e_lead: "Não é paciente",
-  outro: "Outro",
-};
-
-export const LEAD_INTEREST_LABELS: Record<LeadInterest, string> = {
-  pac: "PAC",
-  audiometria: "Audiometria",
-  fono_infantil: "Fono infantil",
-  fono_adulto: "Fono adulto",
-  terapia_auditiva: "Terapia auditiva",
-  teste_orelhinha: "Teste da orelhinha",
-  bera: "BERA",
-  disfagia: "Disfagia",
-  home_care: "Home care",
-  outro: "Outro",
-};
-
-export const STAGE_LABELS: Record<LeadStage, string> = {
-  novo: "Novo",
-  em_atendimento: "Atendendo",
-  agendado: "Agendou",
-  compareceu: "Compareceu",
-  perdido: "Perdeu",
-};
-
-const ORIGIN_LABELS: Record<LeadOrigin, string> = {
-  site: "Site",
-  instagram: "Instagram",
-  google_gbp: "Google",
-  taggo: "Taggo",
-  direto: "Direto",
-  outro: "Outro",
-};
-
 /** Estágios em que o lead ainda está em jogo — os que entram na lista de retorno. */
 const ABERTOS: LeadStage[] = ["novo", "em_atendimento"];
-
-export interface Lead {
-  id: string;
-  phone: string;
-  name: string | null;
-  origin: LeadOrigin;
-  originLabel: string;
-  stage: LeadStage;
-  lossReason: LossReason | null;
-  interest: LeadInterest | null;
-  lastSeen: string;
-  /** Dias desde a última mensagem DO LEAD. Ver nota sobre last_seen abaixo. */
-  diasParado: number;
-}
-
-export interface CrmData {
-  leads: Lead[];
-  /** Quantos estão abertos e parados além do limite — o número do dia. */
-  totalRetornar: number;
-  /** Quantos estão abertos no total, parados ou não. */
-  totalAbertos: number;
-}
 
 interface ContactRow {
   id: string;
